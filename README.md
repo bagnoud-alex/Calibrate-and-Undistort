@@ -6,4 +6,4 @@ Scripts to get camera matrix to then un-distord batches of videos
 
 
 
-![picture](pattern.png=100x20)
+![picture](pattern.png =100x20)
