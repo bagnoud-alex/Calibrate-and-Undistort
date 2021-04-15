@@ -6,4 +6,7 @@ Scripts to get camera matrix to then un-distord batches of videos
 
 
 
-![](pattern.png =100x200)
+![](pattern.png)
+
+<img src="pattern.pnt" alt="lol"
+	title="A cute lol" width="150" height="100" />
