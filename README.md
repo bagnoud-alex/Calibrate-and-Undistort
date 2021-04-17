@@ -8,8 +8,8 @@ Scripts to calibrate camera and undistort videos to remove the 'fisheye' effect 
 # Procedure
 The scipts should be run in order, according to the script numbers. Open each script to select the correct paths, names and parameters.
 
-1. `1_calibrate.py` reads the calibration video made with a checkerboard (see end of ReadMe) and computes the camera matrix as well as the distortion coefficients. A few parameters are to be choosen at this part at the beginning of the script (size of the undistorted videos, number of samples to calibrate, ...)
-2. `2_selectzoom.py` is made to choose the zoom of the undistorted videos. In the example picture above, the output is "zoomed out" a little.
+1. `1_calibrate.py` reads the calibration video made with a checkerboard (see 'Camera calibration') and computes the camera matrix as well as the distortion coefficients. A few parameters are to be choosen at the beginning of the script (size of the undistorted videos, number of samples to calibrate, ...)
+2. `2_selectzoom.py` is made to choose the zoom of the undistorted videos. In the example picture above, the output is "zoomed out" a little (black parts).\
 After those two steps, the file `parameters.py` is created and is unique to the camera it was calibrated on. If the resizing of the videos is to be changed for example, the first two scripts have to be executed again to create new parameters.
 3. `3_undistort.py` reads camera parameters from 'parameters.py' and videos from the 'Videos_in' folder and undistorts them. A preview is printed in the output folder of the first frame raw/undistorted for a confirmation of the inner current process. If the conversion is taking too long, consider resizing down the videos in '1_calibrate.py'.
 
