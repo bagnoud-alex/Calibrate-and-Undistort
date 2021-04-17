@@ -2,35 +2,60 @@ import numpy as np
 import cv2
 import os
 
-# https://github.com/niconielsen32?tab=repositories
+"""
+This script is used to get the necessary parameters to undistort any image/video.
+The parameters that are printed in parameters.py are unique to the camera.
+The calibration parameters are also dependent to the resizing, if the resizing 
+has to be changed, this script has to be run again
+"""
 
 # INPUTS HERE
 # ======================================================
-vid_folder = os.getcwd() + "/CheckerboardVideo/"
-vid_name = vid_folder + "movie.mov" 
+vid_folder = os.getcwd() + "/Calibration_Video/"
+vid_name = vid_folder + "iphone_calibration.MOV" 
 checkerboard_dim = (9,6) # dimensions of the checkerboard array
 take_sample_every_x_seconds_from_video = 1 # as the name says :) (to save computing power)
+
+# Resizing of the video, if True, the aspect ratio will be preserved
+resize = True # Resize video ? False = no resizing. True = resizing
+ratio_if_resize_true = 0.625 # 1 == original size
 # ======================================================
-# checkerboard_squarelen = 0.42 # in meters
+print("---------------------------------------------------------------------")
+
+
+# Creating path where the calibration checkerboards are saved
 path_checkers = vid_folder + "checkerboards/"
 if not os.path.isdir(path_checkers):
     os.mkdir(path_checkers)
 
 
-# Loading video and saving some parameters
+
+# === LOADING CALIBRATION VIDEO ===
 vidcap = cv2.VideoCapture(vid_name)
+
+# Getting info from input video
 nbFrames = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT)) # number of frames
 fps = vidcap.get(cv2.CAP_PROP_FPS) # frames per second
 jump = int(fps * take_sample_every_x_seconds_from_video) # every 'jump' frames will be used
 width = int(vidcap.get(cv2.CAP_PROP_FRAME_WIDTH)) # width of video
 height = int(vidcap.get(cv2.CAP_PROP_FRAME_HEIGHT)) # height of video
-# Printing results
+# Printing info
 print("Video length is %ds from which %d samples are taken, one every %.1f seconds"
  % (nbFrames/fps, int(nbFrames/jump), take_sample_every_x_seconds_from_video))
+print("Around 50 samples or more is recommended, the more the better (but slower)!")
+
+# Resizing video ?
+if resize == True:
+    print("RESIZING VIDEO :")
+    print("  - Original size: %dx%d" %(width, height))
+    width = int(width * ratio_if_resize_true)
+    height = int(height * ratio_if_resize_true)
+    print("  - New size: %dx%d" %(width, height))
 
 
-# Preparing vectors that will hold the each frame results
-# termination criteria
+
+# === PREPARATION OF CALIBRATION PARAMS + OUTPUTS ====
+# criteria to refine location of checkerboard corners
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
 objp = np.zeros((checkerboard_dim[0] * checkerboard_dim[1], 3), np.float32)
@@ -40,62 +65,63 @@ objPoints = [] # 3d point in real world space
 imgPoints = [] # 2d points in image plane.
 
 
-# Looping over each 'jump' frames
+
+# === Looping over each 'jump' frames ====
 count = 0
 for frame in range(0, nbFrames, jump):
+    # Printing progress
     print("Finding Corners %d%%" % (frame*100/nbFrames), end="\r")
 
     # Going to the correct frame
     vidcap.set(cv2.CAP_PROP_POS_FRAMES, frame)
     success, image = vidcap.read() # reading frame
+    if resize: image = cv2.resize(image, (width,height)) # Resize image if resize==true
 
     # If frame can be read
     if success:
         # Converts image to grayscale
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # Find the chess board corners (3x3)
-        ret, corners = cv2.findChessboardCorners(gray, checkerboard_dim, None)
+        foundgrid, corners = cv2.findChessboardCorners(gray, checkerboard_dim, None)
 
-        # if corners could be found
-        if ret:
+        # if checkerboard grid could be found
+        if foundgrid:
             # Adding results
             objPoints.append(objp)
-            # Refining corner detectino precision and adding results
+            # Refining precision of corner location and adding results
             corners2 = cv2.cornerSubPix(gray, corners, (11,11), (-1,-1), criteria)
             imgPoints.append(corners2)
-            # Saving frame
-            image = cv2.drawChessboardCorners(image, checkerboard_dim, corners2, ret)
+            # Saving frame with drawn checkerboard
+            image = cv2.drawChessboardCorners(image, checkerboard_dim, corners2, foundgrid)
             cv2.imwrite(path_checkers + "/checker%d.jpg" % count, image)
 
-
     count += 1
-
 
 # Print finish
 print("Found %d/%d valid images for calibration" % (len(objPoints), int(nbFrames/jump)))
 
 
-# Getting the camera calibration matrix over the saved frames 
+
+# === CALIBRATING CAMERA ===
 _, cameraMatrix, dist, _, _ = cv2.calibrateCamera(objPoints, imgPoints, (width, height), None, None)
 
-# Saving into Parameters.py
-parameters = open("parameters.py", "w")
+
+
+# === Saving calibration in parameters.py ===
+parameters = open("parameters.py", "w") # open file
+# Some imports
 parameters.write("import numpy as np \n")
 parameters.write("from numpy import float32 \n\n")
-
+# parameters
 parameters.write("# ==== DISTORTION PARAMETER ==== \n")
 parameters.write("%s = np.%s\n" % ("cameraMatrix", repr(cameraMatrix)))
 parameters.write("%s = np.%s\n" % ("dist", repr(dist)))
+parameters.write("%s = %s\n" % ("resize", repr(resize)))
 parameters.write("%s = %s\n" % ("width", repr(width)))
 parameters.write("%s = %s\n" % ("height", repr(height)))
 parameters.write("%s = 1\n" % "zoom")
-parameters.write("\n# ==== CHECKERBOARDS COORDINATES for /CheckerboardVideo/checkerboards images ==== \n")
-parameters.write("%s = %s\n" % ("check_dim", repr(checkerboard_dim)))
-parameters.write("%s = np.%s\n" % ("imgPoints", repr(imgPoints[0])))
-
 
 print("The parameters of the calibration are saved in 'parameters.py'")
-#cv2.getOptimalNewCameraMatrix(cameraMatrix, dist, (w,h), 1, (w,h))
 
 
 
