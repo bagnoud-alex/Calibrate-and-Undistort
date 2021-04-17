@@ -2,45 +2,71 @@ import numpy as np
 import cv2
 import os
 
-print("---------------------------------------------------------------------")
+"""
+This script must be run only after 1_calibrate.py has been run and parameters.py exists
+This script is made to select the zoom parameter. 
+Run this script, select an appropriate zoom and save it by clicking on the save trackbar
+Note that the size of the image is not the real image size
+"""
 
-# Loading parameters from parameters.py
+# Make sure the checkerboards images from 1_calibrate.py are in this folder
+# ==========================================================
+calibration_path = os.getcwd() + "/Calibration_Video/"
+first_checker_path = calibration_path + "checkerboards/checker0.jpg"
+# ==========================================================
+
+
+
+print("---------------------------------------------------------------------")
+# === LOADING PARAMETERS FROM parameters.py ===
 import parameters
 cameraMatrix = parameters.cameraMatrix
 dist = parameters.dist
+resize = parameters.resize
 width = parameters.width
 height = parameters.height
-# imgPoints = parameters.imgPoints
 print("Parameters have been loaded from parameters.py")
 
-path_checkerboards = os.getcwd() + "/CheckerboardVideo/checkerboards/"
-first_image = path_checkerboards + os.listdir(path_checkerboards)[0]
 
 
-# Image window
-cv2.namedWindow("Choose Zoom", cv2.WINDOW_NORMAL)
+# === LOADING IMAGE ===
+checker = cv2.imread(first_checker_path)
+if not os.path.isfile(first_checker_path):
+	print("Error: Check input of this script, 'checker0.jpg' cannot be found at this address:")
+	exit(first_checker_path)
 
 
-# Incorporate choice on zoom (and size ??)
 
+# === IMAGE WINDOW ===
+# Resizing the window so it is contained in the screen
+cv2.namedWindow("Choose Zoom", cv2.WINDOW_AUTOSIZE)
 size = (width, height)
-resize = (int(width/2), int(height/2))
+ratio = width/height
+window_size = (int(450*ratio), 450)
 
-# See if cv2.resize(to any given size stills) 
+
+
+# === TRACKBARS DEFINITION ===
 def nothing(a):
 	pass
 
+# Function saving selected zoom in parameters.py
 def savezoom(a):
+	# Saving undistorted image
+	cv2.imwrite(calibration_path + "checker0_undistorted.jpg" , imgDist)
+	# getting zoom value
 	zoom = (cv2.getTrackbarPos("zoom", "Parameters")-50)/10
+	# Reading parameters.py and editing zoom line
 	lines = open("parameters.py", 'r').readlines()
 	for l in range(len(lines)):
 		if lines[l].startswith("zoom ="):
-			lines[l] = ("zoom = %d \n" %zoom)
+			lines[l] = ("zoom = %.1f \n" %zoom)
 	out = open("parameters.py", 'w')
 	out.writelines(lines)
 	out.close()
-	print("saved lol")
+	print("saved zoom parameter in 'parameter.py'")
 
+# Trackbars
 cv2.namedWindow("Parameters", cv2.WINDOW_NORMAL)
 cv2.createTrackbar("zoom", "Parameters", 50, 100, nothing)
 cv2.createTrackbar("Click bar to save zoom parameter", "Parameters", 0, 100, savezoom)
@@ -48,38 +74,24 @@ cv2.resizeWindow("Parameters", 400, 100)
 
 
 
+# === REFRESHING TO UPDATE IMAGE WINDOW ===
+print("Choose 'zoom' parameter on the slide bar and save on the trackbar")
+print("press 'Q' to quit")
 while True:
 
+	# Getting new zoom value
 	zoom = (cv2.getTrackbarPos("zoom", "Parameters")-50)/10
-
+	# Applying new zoom param and undistorting
 	newcameramatrix, _ = cv2.getOptimalNewCameraMatrix(cameraMatrix, dist, size, zoom, size)
-
-
-
-	#video_path = os.getcwd() + "/CheckerboardVideo/movie.mov"
-
-	#vidcap = cv2.VideoCapture(video_path)
-	# ret, frame = vidcap.read()
-
-	# Maybe show checkerboards
-
-
-	checker = cv2.imread(first_image)
-
-	#checker = cv2.resize(checker, resize)
 	imgDist = cv2.undistort(checker, cameraMatrix, dist, None, newcameramatrix)
 
-
-
-
-	cv2.imshow("Choose Zoom", imgDist)
-	#cv2.resizeWindow("Choose Zoom", imgDist.shape[1], imgDist.shape[0])
-	if cv2.waitKey(1) & 0xFF == ord('q'):
+	# Printing undistorted image	
+	imgDist_print = cv2.resize(imgDist, window_size)
+	cv2.imshow("Choose Zoom", imgDist_print)
+	if cv2.waitKey(1) & 0xFF == ord('q'): # Press 'Q' to quit 
 		cv2.destroyAllWindows()
 		break
 
-cv2.imwrite(os.getcwd() + "/CheckerboardVideo/"+ "checker0_unFisheyed.jpg" , imgDist)
-#vidcap.release() # closes webcam
 cv2.destroyAllWindows()
 
 
