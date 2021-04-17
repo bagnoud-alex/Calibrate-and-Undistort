@@ -12,17 +12,18 @@ has to be changed, this script has to be run again
 # INPUTS HERE
 # ======================================================
 vid_folder = os.getcwd() + "/Calibration_Video/"
-vid_name = vid_folder + "iphone_calibration.MOV" 
+vid_name = vid_folder + "calibration_video_name.avi" 
 checkerboard_dim = (9,6) # dimensions of the checkerboard array
 take_sample_every_x_seconds_from_video = 1 # as the name says :) (to save computing power)
 
 # Resizing of the video, if True, the aspect ratio will be preserved
-resize = True # Resize video ? False = no resizing. True = resizing
+resize = False # Resize video ? False = no resizing. True = resizing
 ratio_if_resize_true = 0.625 # 1 == original size
 # ======================================================
+
+
+
 print("---------------------------------------------------------------------")
-
-
 # Creating path where the calibration checkerboards are saved
 path_checkers = vid_folder + "checkerboards/"
 if not os.path.isdir(path_checkers):
@@ -32,6 +33,8 @@ if not os.path.isdir(path_checkers):
 
 # === LOADING CALIBRATION VIDEO ===
 vidcap = cv2.VideoCapture(vid_name)
+if not vidcap.isOpened():
+    exit("Video was not loaded. Verify inputs in 1_calibrate.py:\n%s" % vid_name)
 
 # Getting info from input video
 nbFrames = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT)) # number of frames
@@ -122,6 +125,8 @@ parameters.write("%s = %s\n" % ("height", repr(height)))
 parameters.write("%s = 1\n" % "zoom")
 
 print("The parameters of the calibration are saved in 'parameters.py'")
+print("---------------------------------------------------------------------")
+
 
 
 
