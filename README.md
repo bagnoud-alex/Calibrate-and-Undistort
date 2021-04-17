@@ -31,6 +31,11 @@ To calibrate the camera, print a checkerboard pattern (e.g. `pattern.png` that i
 A checkerboard pattern such as this one can be used for the calibration:
 ![picture](pattern.png)
 
+---
+
+Scripts and Example image author: Alex Bagnoud 
+https://github.com/bagnoud-alex/Calibrate-and-Undistort
+
 
 
 
