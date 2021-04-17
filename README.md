@@ -15,9 +15,12 @@ After those two steps, the file `parameters.py` is created and is unique to the 
 
 ---
 
-# Camera calibration
+# Camera calibration
 
-To calibrate the camera, print a checkerboard pattern (e.g. `pattern.png` that is provided in the repository) and fix it on some cardboard (so that the paper stays flat). Then take a video with the camera to be calibrated and move the checkerboard around the field of view, also tilt it, as it is shown in this [image](https://kr.mathworks.com/help/vision/ug/cameracalibrator_fov2.png). The video should be sufficiently long (e.g. 2 minutes) so enough datapoints can be extracted. For a good calibration, at least 50 datapoints should be used, the more the better. (This setting can be tuned in the '1_calibrate.py' script). Place the video in the 'Calibration_Video' folder and execute the procedure described above.
+To calibrate the camera, print a checkerboard pattern (e.g. `pattern.png` that is provided in the repository) and fix it on some cardboard (so that the paper stays flat). Then take a video with the camera to be calibrated and move the checkerboard around the field of view, also tilt it, as it is shown in this [image](https://kr.mathworks.com/help/vision/ug/cameracalibrator_fov2.png). The video should be sufficiently long (e.g. 2 minutes) so enough datapoints can be extracted. For a good calibration, at least 50 datapoints should be used, the more the better. (This setting can be tuned in the `1_calibrate.py` script). Place the video in the 'Calibration_Video' folder and execute the procedure described above.
+
+A checkerboard pattern such as this one can be used for the calibration:
+![picture](pattern.png)
 
 
 
