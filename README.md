@@ -33,7 +33,7 @@ A checkerboard pattern such as this one can be used for the calibration:
 
 ---
 
-Scripts and Example image author: Alex Bagnoud 
+Scripts and Example image author: Alex BAGNOUD \
 https://github.com/bagnoud-alex/Calibrate-and-Undistort
 
 
