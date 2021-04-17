@@ -98,7 +98,7 @@ for i in range(len(Videos)):
 
         # Loads next image and resizes
         success, image = vidcap.read()
-        if resize: image = cv2.resize(image, (width, height))
+        if resize and success: image = cv2.resize(image, (width, height))
         count += 1
 
     print("Frames Processed.      ")
