@@ -1,6 +1,12 @@
 # CameraCalibration
-Scripts to get camera matrix to then un-distord batches of videos 
-
+Scripts to calibrate camera and undistort videos to remove the 'fisheye' effect as seen here:
 
 ![picture](Example.png)
+
+---
+# Scripts
+'test.py'
+> test.py
+
+
 
