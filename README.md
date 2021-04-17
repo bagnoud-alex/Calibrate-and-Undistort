@@ -6,11 +6,11 @@ Scripts to calibrate camera and undistort videos to remove the 'fisheye' effect 
 ---
 
 # Requirements
-The scripts are based on **numpy** and **opencv**.
-For an basic conda environment with the required libraries, input the following lines in a console:
-`conda create -n ipcam python=3.8.8 numpy=1.19`
-`conda activate ipcam`
-`conda install -c conda-forge opencv`
+The scripts are based on **numpy** and **opencv**. \
+For an basic conda environment with the required libraries, input the following lines in a console: \
+`conda create -n ipcam python=3.8.8 numpy=1.19` \
+`conda activate ipcam` \
+`conda install -c conda-forge opencv` \
 
 ---
 
