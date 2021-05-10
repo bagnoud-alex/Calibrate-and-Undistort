@@ -79,12 +79,14 @@ for i in range(len(Videos)):
     firstProcessed = cv2.undistort(image, cameraMatrix, dist, None, newcameramatrix)
     cv2.imwrite(out_path_frame + "/frame0_processed.jpg", firstProcessed)
 
-    # Array storing each processed image (for the video reconstruction)
-    frame_array = []
+    # Preparing video output specs
+    fps = vidcap.get(cv2.CAP_PROP_FPS) # frames per second
+    # output of video
+    out = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(*'DIVX'), fps, (width, height))
 
 
 
-    # === PROCESSING EACH FRAME ===
+    # === PROCESSING AND CREATING MOVIE ONE FRAME AT THE TIME ===
 
     count = 0
     while success:
@@ -93,8 +95,9 @@ for i in range(len(Videos)):
 
         # Undistorting frame
         imgDist = cv2.undistort(image, cameraMatrix, dist, None, newcameramatrix)
-        # Saving each processed frame into an array
-        frame_array.append(imgDist)
+
+        # addding last processed frame to video output
+        out.write(imgDist)
 
         # Loads next image and resizes
         success, image = vidcap.read()
@@ -104,21 +107,7 @@ for i in range(len(Videos)):
     print("Frames Processed.      ")
 
 
-
     # === BUILDING VIDEO === 
-
-    fps = vidcap.get(cv2.CAP_PROP_FPS) # frames per second
-
-    # Creating movie structure
-    out = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(*'DIVX'), fps, (width, height))
-
-    # Creating movie
-    for i in range(len(frame_array)):
-        # Printing progress
-        print("Creating movie: %d%%" % (i*100/len(frame_array)), end="\r")
-        # writing to a image array
-        out.write(frame_array[i])
-
     out.release()
     print("Conversion Complete.      ")
 
