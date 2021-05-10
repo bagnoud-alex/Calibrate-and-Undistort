@@ -97,8 +97,8 @@ for frame in range(0, nbFrames, jump):
             # Saving frame with drawn checkerboard
             image = cv2.drawChessboardCorners(image, checkerboard_dim, corners2, foundgrid)
             cv2.imwrite(path_checkers + "/checker%d.jpg" % count, image)
+            count += 1
 
-    count += 1
 
 # Print finish
 print("Found %d/%d valid images for calibration" % (len(objPoints), int(nbFrames/jump)))
