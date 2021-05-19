@@ -40,7 +40,8 @@ if not os.path.isdir(output_path):
 # === Getting the videos names in 'Video_path' ===
 Videos = [file for file in os.listdir(input_path) if file.endswith(videos_format)]
 if len(Videos) == 0:
-    exit("Error: No videos were found in the folder '/Videos_in")
+    exit("Error: No videos were found in the folder '/Videos_in\n"
+    	 "Check 3_undistort.py if the input video format is correct.")
 else:
     print("%d Video(s) has/have been found in '/Videos_in'" % len(Videos))
 
