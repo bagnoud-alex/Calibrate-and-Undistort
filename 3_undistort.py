@@ -7,6 +7,7 @@ This script reads the camera calibration parameters from parameters.py and undis
 batches of videos present in the folder 'Videos_in'.
 N.B. This script can be run infinitely as long as the parameters.py are in accordance 
 to the camera they were computed from.
+GitHub repo and explanations: https://github.com/bagnoud-alex/Calibrate-and-Undistort
 """
 
 # ENTER INPUTS HERE
