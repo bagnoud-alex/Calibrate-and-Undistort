@@ -7,6 +7,7 @@ This script must be run only after 1_calibrate.py has been run and parameters.py
 This script is made to select the zoom parameter. 
 Run this script, select an appropriate zoom and save it by clicking on the save trackbar
 Note that the size of the image is not the real image size
+GitHub repo and explanations: https://github.com/bagnoud-alex/Calibrate-and-Undistort
 """
 
 # Make sure the checkerboards images from 1_calibrate.py are in this folder
