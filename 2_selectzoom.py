@@ -76,7 +76,7 @@ cv2.resizeWindow("Parameters", 400, 100)
 
 
 # === REFRESHING TO UPDATE IMAGE WINDOW ===
-print("Choose 'zoom' parameter on the slide bar and save on the trackbar")
+print("Choose 'zoom' parameter on the slide bar and save on the trackbar\n ! The 'Zoom window' might be hidden behind the image !")
 print("press 'Q' to quit")
 while True:
 
