@@ -7,6 +7,7 @@ This script is used to get the necessary parameters to undistort any image/video
 The parameters that are printed in parameters.py are unique to the camera.
 The calibration parameters are also dependent to the resizing, if the resizing 
 has to be changed, this script has to be run again
+GitHub repo and explanations: https://github.com/bagnoud-alex/Calibrate-and-Undistort
 """
 
 # INPUTS HERE
